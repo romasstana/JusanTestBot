@@ -74,7 +74,7 @@ public class Bot extends TelegramLongPollingBot {
                 var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
                 var users = userRepository.findAll();
                 for (User user: users){
-                    prepareAndSendMessage(user.getChat_id(), textToSend);
+                    prepareAndSendMessage(user.getChatId(), textToSend);
                 }
             }
 
@@ -158,7 +158,7 @@ public class Bot extends TelegramLongPollingBot {
             var chat = msg.getChat();
 
             User user = new User();
-            user.setChat_id(chatId);
+            user.setChatId(chatId);
             user.setStatus(false);
 
             userRepository.save(user);

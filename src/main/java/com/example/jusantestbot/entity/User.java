@@ -10,40 +10,40 @@ import java.util.Objects;
 @Entity(name = "users")
 public class User {
     @Id
-    private Long user_id;
+    private Long userId;
 
     @Column
-    private Long company_id;
+    private Long companyId;
 
     @Column
-    private Long chat_id;
+    private Long chatId;
 
     @Column
     private Boolean status;
 
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Long getCompany_id() {
-        return company_id;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany_id(Long company_id) {
-        this.company_id = company_id;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public Long getChat_id() {
-        return chat_id;
+    public Long getChatId() {
+        return chatId;
     }
 
-    public void setChat_id(Long chat_id) {
-        this.chat_id = chat_id;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public Boolean getStatus() {
@@ -57,9 +57,9 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
-                ", company_id=" + company_id +
-                ", chat_id=" + chat_id +
+                "userId=" + userId +
+                ", companyId=" + companyId +
+                ", chatId=" + chatId +
                 ", status=" + status +
                 '}';
     }
@@ -68,13 +68,12 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         User user = (User) o;
-        return chat_id == user.chat_id;
-    }
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), chat_id);
+        return Objects.equals(userId, user.userId) && Objects.equals(companyId, user.companyId) && Objects.equals(chatId, user.chatId) && Objects.equals(status, user.status);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, companyId, chatId, status);
+    }
 }
