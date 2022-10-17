@@ -1,14 +1,14 @@
 package com.example.jusantestbot.entity;
 
 
-import org.hibernate.annotations.Table;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.security.Timestamp;
+import java.util.Objects;
 
 @Entity(name = "users")
-public class Users {
+public class User {
     @Id
     private Long user_id;
 
@@ -20,6 +20,7 @@ public class Users {
 
     @Column
     private Boolean status;
+
 
     public Long getUser_id() {
         return user_id;
@@ -55,11 +56,25 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Users{" +
+        return "User{" +
                 "user_id=" + user_id +
                 ", company_id=" + company_id +
                 ", chat_id=" + chat_id +
                 ", status=" + status +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return chat_id == user.chat_id;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), chat_id);
+    }
+
 }
