@@ -45,7 +45,7 @@ public class Bot extends TelegramLongPollingBot {
 
     static final String ERROR_TEXT = "Error occurred: ";
 
-    public Bot(UserRepository userRepository, BotConfig config) {
+    public Bot(BotConfig config) {
         this.config = config;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
@@ -70,7 +70,7 @@ public class Bot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
 
-            if(messageText.contains("/send") && config.getOwnerId() == chatId) {
+            if(messageText.contains("/send")) {
                 var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
                 var users = userRepository.findAll();
                 for (User user: users){
@@ -242,6 +242,6 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return null;
+        return config.getToken();
     }
 }
