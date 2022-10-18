@@ -90,6 +90,7 @@ public class Bot extends TelegramLongPollingBot {
                     System.out.println(data[0]);
                     System.out.println(data[1]);
                 System.out.println(user.toString());
+                    prepareAndSendMessage(chatId, "Your data have been successfully saved");
             }
             else {
 
