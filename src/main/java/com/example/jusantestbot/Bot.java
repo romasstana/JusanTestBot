@@ -31,7 +31,7 @@ import java.util.List;
 public class Bot extends TelegramLongPollingBot {
     @Autowired
     private UserRepository userRepository;
-
+    User user = new User();
     final BotConfig config;
 
     static final String HELP_TEXT = "This is bot for the selling companies in JMart.\n\n" +
@@ -43,6 +43,10 @@ public class Bot extends TelegramLongPollingBot {
 
     static final String YES_BUTTON = "YES_BUTTON";
     static final String NO_BUTTON = "NO_BUTTON";
+
+    static final String SUBSCRIBE_BUTTON = "SUBSCRIBE_BUTTON";
+
+    static final String UNSUBSCRIBE_BUTTON = "UNSUBSCRIBE_BUTTON";
 
     static final String ERROR_TEXT = "Error occurred: ";
 
@@ -78,12 +82,19 @@ public class Bot extends TelegramLongPollingBot {
                     prepareAndSendMessage(user.getChatId(), textToSend);
                 }
             }
-
+            else if(!messageText.contains("/") && messageText.contains("+") && messageText.contains(" ")){
+                    String msg = update.getMessage().getText();
+                    String[] data = msg.split(" ");
+                    user.setPhoneNumber(data[0]);
+                    user.setCompanyId(Long.valueOf(data[1]));
+                    System.out.println(data[0]);
+                    System.out.println(data[1]);
+                System.out.println(user.toString());
+            }
             else {
 
                 switch (messageText) {
                     case "/start":
-
                         registerUser(update.getMessage());
                         startCommandReceived(chatId);
                         break;
@@ -96,10 +107,28 @@ public class Bot extends TelegramLongPollingBot {
                     case "/reg":
                         register(chatId);
                         break;
+                    case "/subscribe":
+                        if(user.getPhoneNumber()!=null){
+                        user.setStatus(true);
+                        prepareAndSendMessage(chatId, "You have been subscribed for the notifications");
+                        System.out.println(user.toString());
+                        }
+                        else{
+                            prepareAndSendMessage(chatId, "You have not been authorized");
+                        }
+                        break;
+                    case "/unsubscribe":
+                        if(user.getPhoneNumber()!=null) {
+                            user.setStatus(false);
+                            prepareAndSendMessage(chatId, "You have been unsubscribed from the notifications");
+                        }
+                        else{
+                            prepareAndSendMessage(chatId, "You have not been authorized");
+                        }
+                        break;
 
                     default:
-
-                        prepareAndSendMessage(chatId, "Sorry, command was not recognized");
+                        prepareAndSendMessage(chatId, "Please, type phone number and this format - > +77779476255 123456789");
 
                 }
             }
@@ -111,15 +140,20 @@ public class Bot extends TelegramLongPollingBot {
             if(callbackData.equals(YES_BUTTON)){
                 String text = "You pressed YES button";
                 executeEditMessageText(text, chatId, messageId);
-                if(callbackData.contains("+")){
-                    String msg = update.getCallbackQuery().getMessage().getText();
-                    String[] data = msg.split(" ");
-                    System.out.println(data[0]);
-                    System.out.println(data[2]);
-                }
+                String newText = "Type your phone number and bin in this format - > +77779476255 123456789";
+                prepareAndSendMessage(chatId, newText);
+
             }
             else if(callbackData.equals(NO_BUTTON)){
                 String text = "You pressed NO button";
+                executeEditMessageText(text, chatId, messageId);
+            }
+            else if(callbackData.equals(SUBSCRIBE_BUTTON)){
+                String text = "You have been subscribed for the notifications";
+                executeEditMessageText(text, chatId, messageId);
+            }
+            else if(callbackData.equals(UNSUBSCRIBE_BUTTON)){
+                String text = "You have been unsubscribed from the notifications";
                 executeEditMessageText(text, chatId, messageId);
             }
 
@@ -164,7 +198,6 @@ public class Bot extends TelegramLongPollingBot {
             var chatId = msg.getChatId();
             var chat = msg.getChat();
 
-            User user = new User();
             user.setChatId(chatId);
             user.setStatus(false);
 

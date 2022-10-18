@@ -1,16 +1,15 @@
 package com.example.jusantestbot.entity;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.security.Timestamp;
 import java.util.Objects;
 
 @Entity(name = "users")
 public class User {
     @Id
-    private Long userId = 1L;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long userId;
 
     @Column
     private Long companyId;
@@ -19,11 +18,22 @@ public class User {
     private Long chatId;
 
     @Column
+    private String phoneNumber;
+
+    @Column
     private Boolean status;
 
 
     public Long getUserId() {
         return userId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void setUserId(Long userId) {
@@ -60,6 +70,7 @@ public class User {
                 "userId=" + userId +
                 ", companyId=" + companyId +
                 ", chatId=" + chatId +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", status=" + status +
                 '}';
     }
