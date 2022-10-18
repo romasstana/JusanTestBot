@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity(name = "users")
 public class User {
     @Id
-    private Long userId;
+    private Long userId = 1L;
 
     @Column
     private Long companyId;

@@ -34,11 +34,12 @@ public class Bot extends TelegramLongPollingBot {
 
     final BotConfig config;
 
-    static final String HELP_TEXT = "This bot is created to demonstrate Spring capabilities.\n\n" +
+    static final String HELP_TEXT = "This is bot for the selling companies in JMart.\n\n" +
             "You can execute commands from the main menu on the left or by typing a command:\n\n" +
             "Type /start to see a welcome message\n\n" +
-            "Type /mydata to see data stored about yourself\n\n" +
-            "Type /help to see this message again";
+            "Type /reg to register\n\n" +
+            "Type /subscribe to subscribe for the news\n\n" +
+            "Type /unsubscribe to subscribe from the news\n\n";
 
     static final String YES_BUTTON = "YES_BUTTON";
     static final String NO_BUTTON = "NO_BUTTON";
@@ -49,10 +50,10 @@ public class Bot extends TelegramLongPollingBot {
         this.config = config;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "get a welcome message"));
-        listOfCommands.add(new BotCommand("/mydata", "get your data stored"));
-        listOfCommands.add(new BotCommand("/deletedata", "delete my data"));
         listOfCommands.add(new BotCommand("/help", "info how to use this bot"));
-        listOfCommands.add(new BotCommand("/settings", "set your preferences"));
+        listOfCommands.add(new BotCommand("/reg", "registration"));
+        listOfCommands.add(new BotCommand("/subscribe", "subscribe for the news"));
+        listOfCommands.add(new BotCommand("/unsubscribe", "unsubscribe from the news"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -84,7 +85,7 @@ public class Bot extends TelegramLongPollingBot {
                     case "/start":
 
                         registerUser(update.getMessage());
-                        startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
+                        startCommandReceived(chatId);
                         break;
 
                     case "/help":
@@ -92,8 +93,7 @@ public class Bot extends TelegramLongPollingBot {
                         prepareAndSendMessage(chatId, HELP_TEXT);
                         break;
 
-                    case "/register":
-
+                    case "/reg":
                         register(chatId);
                         break;
 
@@ -111,11 +111,18 @@ public class Bot extends TelegramLongPollingBot {
             if(callbackData.equals(YES_BUTTON)){
                 String text = "You pressed YES button";
                 executeEditMessageText(text, chatId, messageId);
+                if(callbackData.contains("+")){
+                    String msg = update.getCallbackQuery().getMessage().getText();
+                    String[] data = msg.split(" ");
+                    System.out.println(data[0]);
+                    System.out.println(data[2]);
+                }
             }
             else if(callbackData.equals(NO_BUTTON)){
                 String text = "You pressed NO button";
                 executeEditMessageText(text, chatId, messageId);
             }
+
         }
 
     }
@@ -166,14 +173,13 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    private void startCommandReceived(long chatId, String name) {
-
-
-        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you!" + " :blush:");
-        log.info("Replied to user " + name);
-
-
-        sendMessage(chatId, answer);
+    private void startCommandReceived(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        String answer = "In order to register please write your telephone number and BIN in this format -> 1) /reg command " +
+                "2) +77779476255 123456789\"";
+        message.setText(answer);
+        executeMessage(message);
     }
     private void sendMessage(long chatId, String textToSend) {
         SendMessage message = new SendMessage();
